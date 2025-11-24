@@ -21,9 +21,9 @@ class ProverbPrinter(
     try {
       val convertArgs = listOf(
         "convert",
-        "-size", "696x400",
+        "-size", "696x300",
         "-gravity", "center",
-        "-pointsize", "40",
+        "-pointsize", "75",
         "-background", "white",
         "-fill", "black",
         "-font", "DejaVu-Sans",
