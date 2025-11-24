@@ -44,7 +44,7 @@ class ProverbPrinter(
       executor.execute(convertArgs).let { result ->
         if (!result.success) {
           // opcional: logar stderr para debug
-           logger.error { "convert failed: ${result.stderr}" }
+           logger.error("convert failed: ${result.errorMessage}")
           return result
         }
       }
@@ -59,7 +59,7 @@ class ProverbPrinter(
 
       executor.execute(brotherArgs, stdoutFile = binFile).let { result ->
         if (!result.success) {
-           logger.error { "brother_ql_create failed: ${result.stderr}" }
+           logger.error("brother_ql_create failed: ${result.errorMessage}")
           return result
         }
       }
