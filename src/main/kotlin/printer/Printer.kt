@@ -1,5 +1,5 @@
 package printer
 
 interface Printer {
-    fun print(): CmdResult
+  fun print(): CmdResult
 }
