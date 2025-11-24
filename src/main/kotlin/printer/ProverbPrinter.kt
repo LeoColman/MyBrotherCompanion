@@ -19,8 +19,6 @@ class ProverbPrinter(
 
     val tmpText = createTempFile("proverb_text_", ".txt").toFile()
     try {
-      tmpText.writeText(text, charset = Charsets.UTF_8)
-
       val convertArgs = listOf(
         "convert",
         "-size", "696x400",
@@ -29,7 +27,7 @@ class ProverbPrinter(
         "-background", "white",
         "-fill", "black",
         "-font", "DejaVu-Sans",
-        "caption:${tmpText.absolutePath}",
+        "caption:$text",
         pngFile.absolutePath
       )
       executor.execute(convertArgs).let { if (!it.success) return it }
