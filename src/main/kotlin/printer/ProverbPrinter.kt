@@ -27,7 +27,7 @@ class ProverbPrinter(
         "-background", "white",
         "-fill", "black",
         "-font", "DejaVu-Sans",
-        "caption:$text",
+        "label:$text",
         pngFile.absolutePath
       )
       executor.execute(convertArgs).let { if (!it.success) return it }
