@@ -1,8 +1,12 @@
 package printer
 
+import org.slf4j.LoggerFactory
 import java.io.File
 import kotlin.io.path.createTempFile
 import kotlin.random.Random
+
+
+val logger = LoggerFactory.getLogger(ProverbPrinter::class.java)
 
 class ProverbPrinter(
   model: String = DEFAULT_MODEL,
@@ -10,45 +14,67 @@ class ProverbPrinter(
   queue: String = DEFAULT_QUEUE,
   executor: CommandExecutor = DefaultCommandExecutor(),
 ) : BasePrinter(model, labelSize, queue, executor) {
-  override fun print(): CmdResult {
-    // Always select a random proverb from our companion object
-    val text = randomProverb()
 
+  override fun print(): CmdResult {
+    // 1) Seleciona um provérbio aleatório
+    val rawText = randomProverb()
+
+    // remove quebras de linha, só por segurança
+    val text = rawText.replace('\n', ' ')
+
+    // 2) Arquivos temporários (mesmo padrão do datetime)
     val pngFile = newPngTempFile(prefix = "label_br_proverb_", suffix = ".png")
     val binFile = newBinTempFile(prefix = "label_br_proverb_", suffix = ".bin")
 
-    val tmpText = createTempFile("proverb_text_", ".txt").toFile()
     try {
+      // 3) Gera o PNG com o texto
+      // Use "label:" (como no script de data/hora) para manter o comportamento parecido
       val convertArgs = listOf(
         "convert",
         "-size", "696x300",
         "-gravity", "center",
-        "-pointsize", "75",
+        "-pointsize", "40",
         "-background", "white",
         "-fill", "black",
         "-font", "DejaVu-Sans",
         "label:$text",
         pngFile.absolutePath
       )
-      executor.execute(convertArgs).let { if (!it.success) return it }
 
+      executor.execute(convertArgs).let { result ->
+        if (!result.success) {
+          // opcional: logar stderr para debug
+           logger.error { "convert failed: ${result.stderr}" }
+          return result
+        }
+      }
+
+      // 4) Converte o PNG para o formato binário da Brother
       val brotherArgs = listOf(
         "brother_ql_create",
         "--model", model,
         pngFile.absolutePath,
         "--label-size", labelSize
       )
-      executor.execute(brotherArgs, stdoutFile = binFile).let { if (!it.success) return it }
 
+      executor.execute(brotherArgs, stdoutFile = binFile).let { result ->
+        if (!result.success) {
+           logger.error { "brother_ql_create failed: ${result.stderr}" }
+          return result
+        }
+      }
+
+      // 5) Manda o binário bruto para a fila CUPS (RAW)
       val lpArgs = listOf(
         "lp",
         "-d", queue,
         "-o", "raw",
         binFile.absolutePath
       )
+
       return executor.execute(lpArgs)
     } finally {
-      tmpText.delete()
+      // limpeza silenciosa
       kotlin.runCatching { pngFile.delete() }
       kotlin.runCatching { binFile.delete() }
     }
