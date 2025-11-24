@@ -29,7 +29,7 @@ class ProverbPrinter(
         "-background", "white",
         "-fill", "black",
         "-font", "DejaVu-Sans",
-        "caption:@${tmpText.absolutePath}",
+        "caption:${tmpText.absolutePath}",
         pngFile.absolutePath
       )
       executor.execute(convertArgs).let { if (!it.success) return it }

@@ -39,9 +39,8 @@ fun main() {
             HttpStatusCode.OK
           )
         } else {
-          val msg = "Print failed: ${result.errorMessage}\n"
           call.respondText(
-            msg,
+            "Print failed: ${result.errorMessage}\n",
             ContentType.Text.Plain.withCharset(StandardCharsets.UTF_8),
             HttpStatusCode.InternalServerError
           )

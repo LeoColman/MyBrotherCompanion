@@ -1,4 +1,4 @@
-# Multi-stage build for BrotherQL700Companion
+# Multi-stage build for MyBrotherCompanion
 
 # 1) Build stage: use JDK and Gradle Wrapper to produce a fat (shadow) JAR
 FROM eclipse-temurin:21-jdk AS build
