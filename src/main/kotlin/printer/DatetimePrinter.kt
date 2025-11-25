@@ -55,7 +55,7 @@ class DatetimePrinter : BasePrinter() {
       "-background", "white",
       "-fill", "black",
       "-font", "DejaVu-Sans",
-      "label:$text",
+      "caption:$text",
       pngFile.absolutePath
     )
 
