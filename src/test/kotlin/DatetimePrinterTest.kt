@@ -1,10 +1,14 @@
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.file.shouldNotExist
 import io.kotest.matchers.result.shouldBeSuccess
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldMatch
+import io.kotest.matchers.throwable.shouldHaveMessage
 import io.mockk.every
 import io.mockk.mockk
 import java.io.File
@@ -94,20 +98,15 @@ class DatetimePrinterTest : FunSpec({
 
     val printer = DatetimePrinter(executor = executor)
 
-    var thrown: Throwable? = null
-    try {
+    shouldThrow<IllegalArgumentException> {
       printer.print()
-    } catch (t: Throwable) {
-      thrown = t
-    }
-    (thrown is IllegalStateException).shouldBeTrue()
+    } shouldHaveMessage "simulated failure"
 
-    // convert and brother_ql_create should be called; lp should NOT be invoked on failure
-    calls.shouldHaveSize(2)
-    (pngPath != null).shouldBeTrue()
-    File(pngPath!!).exists().shouldBeFalse()
-    (binPath != null).shouldBeTrue()
-    File(binPath!!).exists().shouldBeFalse()
+    calls shouldHaveSize 2
+    pngPath shouldNotBe null 
+    File(pngPath!!).shouldNotExist()
+    binPath shouldNotBe null 
+    File(binPath!!).shouldNotExist()
   }
 })
 
