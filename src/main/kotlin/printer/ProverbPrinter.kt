@@ -8,53 +8,17 @@ class ProverbPrinter(
 
   override fun print(): Result<Unit> {
     val text = randomProverb()
+    return withTempFiles { pngFile, binFile ->
+      runConvert("caption:$text", pngFile, size = "696x400", pointSize = "40")
+      runBrotherQlCreate(pngFile, binFile)
 
-    val pngFile = newPngTempFile(prefix = "label_br_proverb_")
-    val binFile = newBinTempFile(prefix = "label_br_proverb_")
-
-    try {
-      val convertArgs = listOf(
-        "convert",
-        "-size", "696x400",
-        "-gravity", "center",
-        "-pointsize", "40",
-        "-background", "white",
-        "-fill", "black",
-        "-font", "DejaVu-Sans",
-        "caption:$text",
-        pngFile.absolutePath
-      )
-
-      executor.execute(convertArgs).getOrThrow()
-
-      val brotherArgs = listOf(
-        "brother_ql_create",
-        "--model", model,
-        pngFile.absolutePath,
-        "--label-size", labelSize
-      )
-
-      executor.execute(brotherArgs, stdoutFile = binFile).getOrThrow()
-
-      val lpArgs = listOf(
-        "lp",
-        "-d", queue,
-        "-o", "raw",
-        binFile.absolutePath
-      )
-
-      return executor.execute(lpArgs)
-    } finally {
-      // limpeza silenciosa
-      kotlin.runCatching { if (pngFile.exists()) { pngFile.delete(); logger.debug("Deleted temp file: {}", pngFile.absolutePath) } }
-      kotlin.runCatching { if (binFile.exists()) { binFile.delete(); logger.debug("Deleted temp file: {}", binFile.absolutePath) } }
+      runLp(binFile)
     }
   }
 
   companion object {
     fun randomProverb(random: Random = Random): String = CHINESE_PROVERBS_PT.random(random)
 
-    // Keep the long data at the end of the file to avoid polluting the main source logic
     private val CHINESE_PROVERBS_PT = listOf(
       "A alegria que você espalha hoje volta para descansar no seu coração amanhã.",
       "A bondade que você oferece hoje constrói a ponte que você atravessará amanhã.",
