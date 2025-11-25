@@ -24,8 +24,8 @@ dependencies {
     testImplementation(kotlin("test"))
     // Kotest for testing
     val kotestVersion = "5.9.1"
-    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
-    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
+    testImplementation("io.kotest:kotest-assertions-core-jvm:$kotestVersion")
     // MockK (not strictly required, but available if needed)
     testImplementation("io.mockk:mockk:1.13.13")
 

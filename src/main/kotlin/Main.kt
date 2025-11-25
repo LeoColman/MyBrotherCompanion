@@ -39,16 +39,15 @@ fun main() {
       get("/print-datetime-br") {
         log.info("Received /print-datetime-br request")
         val result = DatetimePrinter().print()
-        if (result.success) {
+        if (result.isSuccess) {
           call.respondText(
             "OK\n",
             ContentType.Text.Plain.withCharset(StandardCharsets.UTF_8),
             HttpStatusCode.OK
           )
         } else {
-          log.error("/print-datetime-br failed: {}", result.errorMessage)
           call.respondText(
-            "Print failed: ${result.errorMessage}\n",
+            "Print failed: ${result.exceptionOrNull()?.message}\n",
             ContentType.Text.Plain.withCharset(StandardCharsets.UTF_8),
             HttpStatusCode.InternalServerError
           )
@@ -59,7 +58,7 @@ fun main() {
       get("/print-proverb-pt") {
         log.info("Received /print-proverb-pt request")
         val result = ProverbPrinter().print()
-        if (result.success) {
+        if (result.isSuccess) {
           val msg = "Printed proverb\n"
           call.respondText(
             msg,
@@ -67,10 +66,8 @@ fun main() {
             HttpStatusCode.OK
           )
         } else {
-          val msg = "Print proverb failed: ${result.errorMessage}\n"
-          log.error("/print-proverb-pt failed: {}", result.errorMessage)
           call.respondText(
-            msg,
+            "Print proverb failed: ${result.exceptionOrNull()?.message}\n",
             ContentType.Text.Plain.withCharset(StandardCharsets.UTF_8),
             HttpStatusCode.InternalServerError
           )
