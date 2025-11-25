@@ -29,13 +29,13 @@ class ProverbPrinter(
       logger.info("Running convert to generate PNG for proverb")
       val convertArgs = listOf(
         "convert",
-        "-size", "696x300",
+        "-size", "696x400",
         "-gravity", "center",
         "-pointsize", "40",
         "-background", "white",
         "-fill", "black",
         "-font", "DejaVu-Sans",
-        "label:$text",
+        "caption:$text",
         pngFile.absolutePath
       )
 
