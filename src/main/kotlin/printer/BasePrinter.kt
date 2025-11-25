@@ -48,6 +48,9 @@ abstract class BasePrinter(
       "-background", "white",
       "-fill", "black",
       "-font", "DejaVu-Sans",
+      // Performance optimizations: strip metadata and use faster PNG compression
+      "-strip",
+      "-define", "png:compression-level=1",
       textArg,
       pngFile.absolutePath
     )

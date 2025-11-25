@@ -11,7 +11,6 @@ class ProverbPrinter(
     return withTempFiles { pngFile, binFile ->
       runConvert("caption:$text", pngFile, size = "696x400", pointSize = "40")
       runBrotherQlCreate(pngFile, binFile)
-
       runLp(binFile)
     }
   }
