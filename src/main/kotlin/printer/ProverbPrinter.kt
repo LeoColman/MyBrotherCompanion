@@ -1,12 +1,7 @@
 package printer
 
 import org.slf4j.LoggerFactory
-import java.io.File
-import kotlin.io.path.createTempFile
 import kotlin.random.Random
-
-
-val logger = LoggerFactory.getLogger(ProverbPrinter::class.java)
 
 class ProverbPrinter(
   model: String = DEFAULT_MODEL,
@@ -16,11 +11,13 @@ class ProverbPrinter(
 ) : BasePrinter(model, labelSize, queue, executor) {
 
   override fun print(): CmdResult {
+    logger.info("Starting proverb print on model={}, labelSize={}, queue={}", model, labelSize, queue)
     // 1) Seleciona um provérbio aleatório
     val rawText = randomProverb()
 
     // remove quebras de linha, só por segurança
     val text = rawText.replace('\n', ' ')
+    logger.debug("Selected proverb length: {} chars", text.length)
 
     // 2) Arquivos temporários (mesmo padrão do datetime)
     val pngFile = newPngTempFile(prefix = "label_br_proverb_", suffix = ".png")
@@ -29,6 +26,7 @@ class ProverbPrinter(
     try {
       // 3) Gera o PNG com o texto
       // Use "label:" (como no script de data/hora) para manter o comportamento parecido
+      logger.info("Running convert to generate PNG for proverb")
       val convertArgs = listOf(
         "convert",
         "-size", "696x300",
@@ -44,12 +42,13 @@ class ProverbPrinter(
       executor.execute(convertArgs).let { result ->
         if (!result.success) {
           // opcional: logar stderr para debug
-           logger.error("convert failed: ${result.errorMessage}")
+          logger.error("convert failed: {}", result.errorMessage)
           return result
         }
       }
 
       // 4) Converte o PNG para o formato binário da Brother
+      logger.info("Running brother_ql_create to generate binary for proverb")
       val brotherArgs = listOf(
         "brother_ql_create",
         "--model", model,
@@ -59,12 +58,13 @@ class ProverbPrinter(
 
       executor.execute(brotherArgs, stdoutFile = binFile).let { result ->
         if (!result.success) {
-           logger.error("brother_ql_create failed: ${result.errorMessage}")
+          logger.error("brother_ql_create failed: {}", result.errorMessage)
           return result
         }
       }
 
       // 5) Manda o binário bruto para a fila CUPS (RAW)
+      logger.info("Sending proverb job to CUPS via lp")
       val lpArgs = listOf(
         "lp",
         "-d", queue,
@@ -72,11 +72,13 @@ class ProverbPrinter(
         binFile.absolutePath
       )
 
-      return executor.execute(lpArgs)
+      val res = executor.execute(lpArgs)
+      if (res.success) logger.info("Proverb print completed successfully") else logger.error("Proverb print failed: {}", res.errorMessage)
+      return res
     } finally {
       // limpeza silenciosa
-      kotlin.runCatching { pngFile.delete() }
-      kotlin.runCatching { binFile.delete() }
+      kotlin.runCatching { if (pngFile.exists()) { pngFile.delete(); logger.debug("Deleted temp file: {}", pngFile.absolutePath) } }
+      kotlin.runCatching { if (binFile.exists()) { binFile.delete(); logger.debug("Deleted temp file: {}", binFile.absolutePath) } }
     }
   }
 

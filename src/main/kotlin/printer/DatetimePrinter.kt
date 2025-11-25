@@ -4,25 +4,34 @@ import java.io.File
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter.ofPattern
 import java.util.Locale
+import org.slf4j.LoggerFactory
 
 class DatetimePrinter : BasePrinter() {
+  private val log = LoggerFactory.getLogger(DatetimePrinter::class.java)
 
   override fun print(): CmdResult {
+    log.info("Starting datetime print on model={}, labelSize={}, queue={}", model, labelSize, queue)
     val now = ZonedDateTime.now()
     val dayOfWeek = now.format(ofPattern("E", Locale.of("pt", "BR"))).substring(0, 3).lowercase()
     val dateTime = now.format(ofPattern("dd/MM HH:mm"))
     val text = "$dayOfWeek $dateTime"
+    log.debug("Formatted datetime text: {}", text)
 
     val pngFile = newPngTempFile("label_br_datetime_", ".png")
     val binFile = newBinTempFile("label_br_datetime_", ".bin")
 
     try {
+      log.info("Running convert to generate PNG")
       runConvert(text, pngFile)
+      log.info("Running brother_ql_create to generate binary")
       runBrotherQlCreate(pngFile, binFile)
-      return runLp(binFile)
+      log.info("Sending job to CUPS via lp")
+      val res = runLp(binFile)
+      if (res.success) log.info("Datetime print completed successfully") else log.error("Datetime print failed: {}", res.errorMessage)
+      return res
     } finally {
-      runCatching { pngFile.delete() }
-      runCatching { binFile.delete() }
+      runCatching { if (pngFile.exists()) { pngFile.delete(); log.debug("Deleted temp file: {}", pngFile.absolutePath) } }
+      runCatching { if (binFile.exists()) { binFile.delete(); log.debug("Deleted temp file: {}", binFile.absolutePath) } }
     }
   }
 
