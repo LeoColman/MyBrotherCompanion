@@ -9,9 +9,9 @@ class ProverbPrinter(
   override fun print(): Result<Unit> {
     val text = randomProverb()
     return withTempFiles { pngFile, binFile ->
-      runConvert("caption:$text", pngFile, size = "696x400", pointSize = "40")
-      runBrotherQlCreate(pngFile, binFile)
-      runLp(binFile)
+      systemCalls.runConvert("caption:$text", pngFile, size = "696x400", pointSize = "40").getOrThrow()
+      systemCalls.runBrotherQlCreate(model, labelSize, pngFile, binFile).getOrThrow()
+      systemCalls.runLp(queue, binFile)
     }
   }
 

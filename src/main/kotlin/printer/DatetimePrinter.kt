@@ -10,9 +10,9 @@ class DatetimePrinter(
   override fun print(): Result<Unit> {
     val text = buildDatetimeText()
     return withTempFiles { pngFile, binFile ->
-      runConvert("label:$text", pngFile, size = "696x300", pointSize = "75")
-      runBrotherQlCreate(pngFile, binFile)
-      runLp(binFile)
+      systemCalls.runConvert("label:$text", pngFile, size = "696x300", pointSize = "75").getOrThrow()
+      systemCalls.runBrotherQlCreate(model, labelSize, pngFile, binFile).getOrThrow()
+      systemCalls.runLp(queue, binFile)
     }
   }
 
