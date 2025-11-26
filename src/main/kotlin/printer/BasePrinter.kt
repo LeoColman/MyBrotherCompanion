@@ -94,7 +94,7 @@ abstract class BasePrinter(
   }
 
   companion object {
-    val DefaultModel: String = "QL-800"
+    val DefaultModel: String = "QL-700"
     val DefaultLabelSize: String = "62"
     val DefaultQueue: String = "Koda"
   }
