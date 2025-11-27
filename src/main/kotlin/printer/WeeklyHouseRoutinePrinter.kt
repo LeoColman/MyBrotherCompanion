@@ -17,7 +17,7 @@ class WeeklyHouseRoutinePrinter(
     val text = buildDailyHouseText(date)
     val markup = toPangoMarkup(text, pointSize = 32)
     return withTempFiles { pngFile, binFile ->
-      systemCalls.runConvertPango(markup, pngFile, size = "696x300").getOrThrow()
+      systemCalls.runConvertPango(markup, pngFile, size = "696x400").getOrThrow()
       systemCalls.runBrotherQlCreate(model, labelSize, pngFile, binFile).getOrThrow()
       systemCalls.runLp(queue, binFile)
     }
@@ -59,6 +59,7 @@ class WeeklyHouseRoutinePrinter(
       "🍽 Louça",
       "♲ Tirar o lixo",
       "⊙ Rodar robô aspirador",
+      "⚘ Regar plantas",
     ),
     DayOfWeek.WEDNESDAY to listOf(
       "🍽 Louça",
@@ -77,6 +78,7 @@ class WeeklyHouseRoutinePrinter(
     DayOfWeek.SATURDAY to listOf(
       "🍽 Louça",
       "⊙ Rodar robô aspirador",
+      "⚘ Regar plantas",
     ),
     DayOfWeek.SUNDAY to listOf(
       "🍽 Louça",
