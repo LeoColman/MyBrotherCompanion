@@ -51,37 +51,37 @@ class WeeklyHouseRoutinePrinter(
   // Só texto nas tarefas também
   private val tasksByDay: Map<DayOfWeek, List<String>> = mapOf(
     DayOfWeek.MONDAY to listOf(
-      "Louça",
-      "Limpar o banheiro",
-      "Rodar robô aspirador",
+      "🍽 Louça",
+      "🧼 Limpar o banheiro",
+      "⊙ Rodar robô aspirador",
     ),
     DayOfWeek.TUESDAY to listOf(
-      "Louça",
-      "Tirar o lixo",
-      "Rodar robô aspirador",
+      "🍽 Louça",
+      "♲ Tirar o lixo",
+      "⊙ Rodar robô aspirador",
     ),
     DayOfWeek.WEDNESDAY to listOf(
-      "Louça",
-      "Rodar robô aspirador",
+      "🍽 Louça",
+      "⊙ Rodar robô aspirador",
     ),
     DayOfWeek.THURSDAY to listOf(
-      "Louça",
-      "Tirar o lixo",
-      "Rodar robô aspirador",
+      "🍽 Louça",
+      "♲ Tirar o lixo",
+      "⊙ Rodar robô aspirador",
     ),
     DayOfWeek.FRIDAY to listOf(
-      "Louça",
-      "Lavar minhas roupas do trabalho",
-      "Rodar robô aspirador",
+      "🍽 Louça",
+      "👔 Lavar minhas roupas do trabalho",
+      "⊙ Rodar robô aspirador",
     ),
     DayOfWeek.SATURDAY to listOf(
-      "Louça",
-      "Rodar robô aspirador",
+      "🍽 Louça",
+      "⊙ Rodar robô aspirador",
     ),
     DayOfWeek.SUNDAY to listOf(
-      "Louça",
-      "Tirar o lixo",
-      "Rodar robô aspirador",
+      "🍽 Louça",
+      "♲ Tirar o lixo",
+      "⊙ Rodar robô aspirador",
     ),
   )
 
