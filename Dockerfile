@@ -27,13 +27,20 @@ WORKDIR /app
 # - imagemagick: provides `convert`
 # - cups-client: provides `lp`
 # - py3-pip + brother_ql: provides `brother_ql_create`
-# - font-dejavu: provides DejaVu-Sans font used by ImageMagick in ProverbPrinter
+# - Noto fonts (including emoji) to ensure emojis render via ImageMagick/fontconfig
+#   We keep DejaVu as a general fallback as well
 RUN apk add --no-cache \
     imagemagick \
     cups-client \
     py3-pip \
     ttf-dejavu \
+    ttf-symbola \
+    noto-fonts-extra \
+    noto-fonts \
+    pango \
+    fontconfig \
     bash \
+  && fc-cache -f \
   && pip3 install --no-cache-dir brother_ql
 
 # Copy fat jar from the build stage

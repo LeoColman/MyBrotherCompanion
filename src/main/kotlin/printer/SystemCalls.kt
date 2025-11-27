@@ -46,11 +46,47 @@ class SystemCalls(
       "-pointsize", pointSize,
       "-background", "white",
       "-fill", "black",
-      "-font", "DejaVu-Sans",
+      // Use a font that includes checkbox glyphs (U+2610/U+2611) and allow fontconfig fallback
+      // to Noto Sans (letters) and Noto Color Emoji (emojis). Noto Sans Symbols 2 has the
+      // ballot box characters which ensures the "☐" renders correctly.
+      "-font", "Noto Sans Symbols 2",
       // Performance optimizations: strip metadata and use faster PNG compression
       "-strip",
       "-define", "png:compression-level=1",
       textArg,
+      pngFile.absolutePath,
+    )
+
+    return executor.execute(convertArgs)
+  }
+
+  /**
+   * Runs ImageMagick `convert` using the Pango renderer to properly render complex glyphs
+   * and emojis via font fallback. The [pangoMarkup] must be valid Pango markup and will be
+   * passed with the `pango:` prefix.
+   */
+  fun runConvertPango(pangoMarkup: String, pngFile: File, size: String): Result<Unit> {
+    val convertArgs = listOf(
+      "convert",
+      "-size", size,
+      "-gravity", "center",
+      "-background", "white",
+      "-fill", "black",
+      // Ensure we produce a non-paletted, non-alpha PNG so Pillow/brother_ql
+      // handle it reliably. TrueColor (RGB, depth 8) avoids the
+      // "color must be int or single-element tuple" error when
+      // brother_ql tries to create a background image based on mode.
+      "-alpha", "off",
+      "-type", "TrueColor",
+      "-depth", "8",
+      // Force PNG writer to emit Truecolor
+      "-define", "png:color-type=2",
+      // Ensure the final image is grayscale/monochrome friendly for thermal printers
+      "-colorspace", "Gray",
+      // Performance optimizations: strip metadata and use faster PNG compression
+      "-strip",
+      "-define", "png:compression-level=1",
+      "pango:$pangoMarkup",
       pngFile.absolutePath,
     )
 
