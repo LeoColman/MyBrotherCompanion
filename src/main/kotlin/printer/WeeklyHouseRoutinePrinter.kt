@@ -1,14 +1,14 @@
 package printer
 
 import java.time.DayOfWeek
+import java.time.DayOfWeek.*
 import java.time.LocalDate
 
 class WeeklyHouseRoutinePrinter(
   executor: CommandExecutor = DefaultCommandExecutor(),
 ) : BasePrinter(executor) {
 
-  override fun print(): Result<Unit> =
-    printForDate(LocalDate.now())
+  override fun print(): Result<Unit> = printForDate(LocalDate.now())
 
   /**
    * Prints the house's daily routine for the provided date.
@@ -40,48 +40,48 @@ class WeeklyHouseRoutinePrinter(
   // Single-line title with emojis, localized to Portuguese (content required by tests)
   private fun dayTitle(day: DayOfWeek): String =
     when (day) {
-      DayOfWeek.MONDAY    -> "🏠✓ Rotina da casa - Segunda 🏠✓"
-      DayOfWeek.TUESDAY   -> "🏠✓ Rotina da casa - Terça 🏠✓"  
-      DayOfWeek.WEDNESDAY -> "🏠✓ Rotina da casa - Quarta 🏠✓" 
-      DayOfWeek.THURSDAY  -> "🏠✓ Rotina da casa - Quinta 🏠✓" 
-      DayOfWeek.FRIDAY    -> "🏠✓ Rotina da casa - Sexta 🏠✓"  
-      DayOfWeek.SATURDAY  -> "🏠✓ Rotina da casa - Sábado 🏠✓" 
-      DayOfWeek.SUNDAY    -> "🏠✓ Rotina da casa - Domingo 🏠✓"
+      MONDAY -> "🏠✓ Rotina da casa - Segunda 🏠✓"
+      TUESDAY -> "🏠✓ Rotina da casa - Terça 🏠✓"  
+      WEDNESDAY -> "🏠✓ Rotina da casa - Quarta 🏠✓" 
+      THURSDAY -> "🏠✓ Rotina da casa - Quinta 🏠✓" 
+      FRIDAY -> "🏠✓ Rotina da casa - Sexta 🏠✓"  
+      SATURDAY -> "🏠✓ Rotina da casa - Sábado 🏠✓" 
+      SUNDAY -> "🏠✓ Rotina da casa - Domingo 🏠✓"
     }
 
   // Daily tasks per weekday (kept in Portuguese and with emojis to match label expectations)
   private val tasksByDay: Map<DayOfWeek, List<String>> = mapOf(
-    DayOfWeek.MONDAY to listOf(
+    MONDAY to listOf(
       "🍽 Louça",
       "🧼 Limpar o banheiro",
       "⊙ Rodar robô aspirador",
     ),
-    DayOfWeek.TUESDAY to listOf(
+    TUESDAY to listOf(
       "🍽 Louça",
       "♲ Tirar o lixo",
       "⊙ Rodar robô aspirador",
       "⚘ Regar plantas",
     ),
-    DayOfWeek.WEDNESDAY to listOf(
+    WEDNESDAY to listOf(
       "🍽 Louça",
       "⊙ Rodar robô aspirador",
     ),
-    DayOfWeek.THURSDAY to listOf(
+    THURSDAY to listOf(
       "🍽 Louça",
       "♲ Tirar o lixo",
       "⊙ Rodar robô aspirador",
     ),
-    DayOfWeek.FRIDAY to listOf(
+    FRIDAY to listOf(
       "🍽 Louça",
       "👔 Lavar minhas roupas do trabalho",
       "⊙ Rodar robô aspirador",
     ),
-    DayOfWeek.SATURDAY to listOf(
+    SATURDAY to listOf(
       "🍽 Louça",
       "⊙ Rodar robô aspirador",
       "⚘ Regar plantas",
     ),
-    DayOfWeek.SUNDAY to listOf(
+    SUNDAY to listOf(
       "🍽 Louça",
       "♲ Tirar o lixo",
       "⊙ Rodar robô aspirador",
