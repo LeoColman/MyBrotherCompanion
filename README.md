@@ -27,6 +27,18 @@ Available endpoints:
 - GET /health → simple health check
 - GET /print-datetime-br → prints a label with the current date/time (pt-BR)
 - GET /print-proverb-pt → prints a random Portuguese proverb
+- GET /print-weekly-house-routine → prints today's or a specified day's routine (optional query param day)
+
+Swagger / OpenAPI UI
+--------------------
+
+This project exposes a Swagger UI to browse and try the API endpoints.
+
+- OpenAPI spec file: src/main/resources/openapi/documentation.yaml
+- When the server is running, open the UI at:
+  - http://localhost:8088/swagger
+
+From there you can expand endpoints and execute requests directly from the browser.
 
 Printing notes (CUPS and queue)
 -------------------------------

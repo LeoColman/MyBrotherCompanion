@@ -1,0 +1,91 @@
+openapi: 3.0.3
+info:
+  title: BrotherQL Companion API
+  version: 1.0.0
+  description: |
+    Small Ktor service exposing endpoints to print labels on a Brother QL series printer.
+servers:
+  - url: http://localhost:8088
+paths:
+  /health:
+    get:
+      summary: Health check
+      description: Returns OK if the service is up.
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: OK\n
+  /print-datetime-br:
+    get:
+      summary: Print current date/time (pt-BR)
+      responses:
+        '200':
+          description: Print job submitted
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: OK\n
+        '500':
+          description: Printing failed
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Print failed: <reason>\n"
+
+  /print-proverb-pt:
+    get:
+      summary: Print a random Portuguese proverb
+      responses:
+        '200':
+          description: Printed proverb
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Printed proverb\n"
+        '500':
+          description: Printing failed
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Print proverb failed: <reason>\n"
+
+  /print-weekly-house-routine:
+    get:
+      summary: Print today's weekly house routine checklist
+      parameters:
+        - name: day
+          in: query
+          required: false
+          description: Target day of week. Accepts MONDAY..SUNDAY or numbers 1(Mon) to 7(Sun).
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Printed routine
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Printed weekly house routine\n
+        '400':
+          description: Invalid parameter
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Invalid 'day' parameter. Use one of: MONDAY..SUNDAY, or numbers 1(Mon)-7(Sun).\n"
+        '500':
+          description: Printing failed
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Print weekly house routine failed: <reason>\n"

@@ -6,6 +6,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.plugins.calllogging.*
+import io.ktor.server.plugins.swagger.*
 import printer.DatetimePrinter
 import printer.ProverbPrinter
 import printer.WeeklyHouseRoutinePrinter
@@ -33,6 +34,8 @@ fun main() {
       }
     }
     routing {
+      // Swagger UI serving OpenAPI spec from resources
+      swaggerUI(path = "/swagger", swaggerFile = "openapi/documentation.yaml")
       // Health check
       get("/health") {
         log.debug("Handling /health request")

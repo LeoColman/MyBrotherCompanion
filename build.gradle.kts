@@ -20,6 +20,8 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-call-logging-jvm:$ktorVersion")
+    // Swagger/OpenAPI UI for Ktor
+    implementation("io.ktor:ktor-server-swagger-jvm:$ktorVersion")
 
     testImplementation(kotlin("test"))
     // Kotest for testing
