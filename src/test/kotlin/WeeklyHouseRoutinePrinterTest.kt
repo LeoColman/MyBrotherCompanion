@@ -2,9 +2,11 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.file.shouldNotExist
 import io.kotest.matchers.result.shouldBeSuccess
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.throwable.shouldHaveMessage
 import java.io.File
@@ -40,11 +42,26 @@ class WeeklyHouseRoutinePrinterTest : FunSpec({
     val convert = calls[0]
     convert.args.first() shouldBe "convert"
     // sizing and style
-    convert.args.containsAll(listOf("-size", "696x400", "-gravity", "center", "-pointsize", "32")).shouldBe(true)
+    convert.args.containsAll(listOf("-size", "696x400", "-gravity", "center", "-pointsize", "40")).shouldBeTrue()
     // caption: content
     val captionArg = convert.args.first { it.startsWith("caption:") }
     captionArg.shouldStartWith("caption:")
     captionArg.contains("Rotina da casa").shouldBe(true)
+  }
+
+  test("brother_ql_create uses model, size and reads PNG while writing BIN to stdoutFile") {
+    val (calls, executor) = capturingExecutor()
+
+    WeeklyHouseRoutinePrinter(executor).print().shouldBeSuccess()
+
+    calls.shouldHaveSize(3)
+    val pngPath = calls[0].args.last()
+    val brother = calls[1]
+    brother.args.first() shouldBe "brother_ql_create"
+    brother.args.containsAll(listOf("--model", BasePrinter.DefaultModel)).shouldBeTrue()
+    brother.args.containsAll(listOf("--label-size", BasePrinter.DefaultLabelSize)).shouldBeTrue()
+    brother.args.contains(pngPath).shouldBeTrue()
+    (brother.stdoutFile != null).shouldBeTrue()
   }
 
   test("lp sends job to the correct queue with raw option and same BIN file") {
@@ -56,9 +73,21 @@ class WeeklyHouseRoutinePrinterTest : FunSpec({
     val brother = calls[1]
     val lp = calls[2]
     lp.args.first() shouldBe "lp"
-    lp.args.containsAll(listOf("-d", BasePrinter.DefaultQueue, "-o", "raw")).shouldBe(true)
+    lp.args.containsAll(listOf("-d", BasePrinter.DefaultQueue, "-o", "raw")).shouldBeTrue()
     val binPathFromLp = lp.args.last()
     binPathFromLp shouldBe brother.stdoutFile!!.absolutePath
+  }
+
+  test("cleans temp PNG and BIN files on success") {
+    val (calls, executor) = capturingExecutor()
+
+    WeeklyHouseRoutinePrinter(executor).print().shouldBeSuccess()
+
+    calls.shouldHaveSize(3)
+    val pngPath = calls[0].args.last()
+    val binPath = calls[2].args.last()
+    File(pngPath).exists().shouldBeFalse()
+    File(binPath).exists().shouldBeFalse()
   }
 
   test("cleans temp files when brother_ql_create fails and throws") {
@@ -86,9 +115,9 @@ class WeeklyHouseRoutinePrinterTest : FunSpec({
     } shouldHaveMessage "simulated failure"
 
     calls shouldHaveSize 2
-    pngPath shouldBe pngPath // access to avoid smart casts warning
+    pngPath shouldNotBe null 
     File(pngPath!!).shouldNotExist()
-    binPath shouldBe binPath
+    binPath shouldNotBe null 
     File(binPath!!).shouldNotExist()
   }
 })

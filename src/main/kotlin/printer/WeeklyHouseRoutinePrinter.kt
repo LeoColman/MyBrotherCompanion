@@ -18,7 +18,7 @@ class WeeklyHouseRoutinePrinter(
     return withTempFiles { pngFile, binFile ->
       // Multiline content: use caption: so ImageMagick does wrapping/multiline layout
       // Keep size and point size aligned with printer tests and legibility
-      systemCalls.runConvert("caption:$text", pngFile, size = "696x400", pointSize = "32").getOrThrow()
+      systemCalls.runConvert("caption:$text", pngFile, size = "696x400", pointSize = "40").getOrThrow()
       systemCalls.runBrotherQlCreate(model, labelSize, pngFile, binFile).getOrThrow()
       systemCalls.runLp(queue, binFile)
     }
