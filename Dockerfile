@@ -37,7 +37,6 @@ RUN apk add --no-cache \
     ttf-symbola \
     noto-fonts-extra \
     noto-fonts \
-    pango \
     fontconfig \
     bash \
   && fc-cache -f \

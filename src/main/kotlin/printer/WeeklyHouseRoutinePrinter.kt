@@ -15,9 +15,9 @@ class WeeklyHouseRoutinePrinter(
    */
   fun printForDate(date: LocalDate): Result<Unit> {
     val text = buildDailyHouseText(date)
-    val markup = toPangoMarkup(text, pointSize = 32)
     return withTempFiles { pngFile, binFile ->
-      systemCalls.runConvertPango(markup, pngFile, size = "696x400").getOrThrow()
+      // Multiline content: use caption: so ImageMagick does wrapping/multiline layout
+      systemCalls.runConvert("caption:$text", pngFile, size = "696x400", pointSize = "40").getOrThrow()
       systemCalls.runBrotherQlCreate(model, labelSize, pngFile, binFile).getOrThrow()
       systemCalls.runLp(queue, binFile)
     }
@@ -86,13 +86,5 @@ class WeeklyHouseRoutinePrinter(
       "⊙ Rodar robô aspirador",
     ),
   )
-
-  private fun toPangoMarkup(text: String, pointSize: Int): String {
-    val primary = "Symbola"
-    val escaped = text
-      .replace("&", "&amp;")
-      .replace("<", "&lt;")
-      .replace(">", "&gt;")
-    return """<span font_desc=\"$primary $pointSize\">$escaped</span>"""
-  }
+  
 }

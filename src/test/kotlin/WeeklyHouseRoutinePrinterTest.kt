@@ -21,17 +21,17 @@ class WeeklyHouseRoutinePrinterTest : FunSpec({
     val text = printer.buildDailyHouseText(date)
 
     val expected = listOf(
-      "🏠🧼 Rotina da casa - Segunda",
+      "🏠✓ Rotina da casa - Segunda 🏠✓",
       "",
-      "☐ 🍽️ Louça",
-      "☐ 🚿 Limpar o banheiro",
-      "☐ 🤖🧹 Rodar Robô Aspirador",
+      "[ ] 🍽 Louça",
+      "[ ] 🧼 Limpar o banheiro",
+      "[ ] ⊙ Rodar robô aspirador",
     ).joinToString("\n")
 
     text shouldBe expected
   }
 
-  test("convert uses pango: renderer with proper sizing for multiline emoji text") {
+  test("convert uses default convert with proper sizing and caption: for multiline text") {
     val (calls, executor) = capturingExecutor()
 
     WeeklyHouseRoutinePrinter(executor).print().shouldBeSuccess()
@@ -39,12 +39,12 @@ class WeeklyHouseRoutinePrinterTest : FunSpec({
     calls.shouldHaveSize(3)
     val convert = calls[0]
     convert.args.first() shouldBe "convert"
-    // sizing and style (pango renderer does not use -pointsize here)
-    convert.args.containsAll(listOf("-size", "696x300", "-gravity", "center")).shouldBe(true)
-    // pango: markup with content
-    val pangoArg = convert.args.first { it.startsWith("pango:") }
-    pangoArg.shouldStartWith("pango:")
-    pangoArg.contains("Rotina da casa").shouldBe(true)
+    // sizing and style
+    convert.args.containsAll(listOf("-size", "696x400", "-gravity", "center", "-pointsize", "32")).shouldBe(true)
+    // caption: content
+    val captionArg = convert.args.first { it.startsWith("caption:") }
+    captionArg.shouldStartWith("caption:")
+    captionArg.contains("Rotina da casa").shouldBe(true)
   }
 
   test("lp sends job to the correct queue with raw option and same BIN file") {

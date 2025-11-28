@@ -19,7 +19,7 @@ import kotlin.random.Random
 
 class ProverbPrinterTest : FunSpec({
 
-  test("convert uses pango: renderer with size 696x400 for proverb text") {
+  test("convert uses default convert with size 696x400 and label: for proverb text") {
     val (calls, executor) = capturingExecutor()
 
     val printer = ProverbPrinter(executor)
@@ -29,10 +29,10 @@ class ProverbPrinterTest : FunSpec({
     calls.shouldHaveSize(3)
     val convert = calls[0]
     convert.args.first() shouldBe "convert"
-    convert.args.containsAll(listOf("-size", "696x400", "-gravity", "center")).shouldBeTrue()
-    val pangoArg = convert.args.first { it.startsWith("pango:") }
-    pangoArg.shouldStartWith("pango:")
-    pangoArg.removePrefix("pango:").isNotBlank().shouldBeTrue()
+    convert.args.containsAll(listOf("-size", "696x400", "-gravity", "center", "-pointsize", "40")).shouldBeTrue()
+    val labelArg = convert.args.first { it.startsWith("label:") }
+    labelArg.shouldStartWith("label:")
+    labelArg.removePrefix("label:").isNotBlank().shouldBeTrue()
   }
 
   test("brother_ql_create uses model, size and reads PNG while writing BIN to stdoutFile") {

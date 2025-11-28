@@ -10,9 +10,9 @@ class ProverbPrinter(
     // Use non-color Noto fonts only; enforce text (monochrome) presentation
     // to avoid selecting color emoji glyphs.
     val text = enforceTextPresentation(randomProverb())
-    val markup = toPangoMarkup(text, pointSize = 40)
     return withTempFiles { pngFile, binFile ->
-      systemCalls.runConvertPango(markup, pngFile, size = "696x400").getOrThrow()
+      // Single line proverb: render with default ImageMagick convert using label:
+      systemCalls.runConvert("label:$text", pngFile, size = "696x400", pointSize = "40").getOrThrow()
       systemCalls.runBrotherQlCreate(model, labelSize, pngFile, binFile).getOrThrow()
       systemCalls.runLp(queue, binFile)
     }
@@ -26,16 +26,7 @@ class ProverbPrinter(
     }
   }
 
-  private fun toPangoMarkup(text: String, pointSize: Int): String {
-    // Prefer non-color font to ensure black-only glyphs; fontconfig will fallback
-    // to other non-color fonts (e.g., Symbola, Noto Sans) as needed.
-    val primary = "Noto Sans Symbols 2"
-    val escaped = text
-      .replace("&", "&amp;")
-      .replace("<", "&lt;")
-      .replace(">", "&gt;")
-    return """<span font_desc=\"$primary $pointSize\">$escaped</span>"""
-  }
+  // Pango markup removed; rendering now uses default convert with label:/caption: inputs.
 
   // Ensure emojis use text (monochrome) presentation and not color glyphs
   private fun enforceTextPresentation(input: String): String {
