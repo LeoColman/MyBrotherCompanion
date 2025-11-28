@@ -11,13 +11,14 @@ class WeeklyHouseRoutinePrinter(
     printForDate(LocalDate.now())
 
   /**
-   * Imprime a rotina diária da casa para a data fornecida.
+   * Prints the house's daily routine for the provided date.
    */
   fun printForDate(date: LocalDate): Result<Unit> {
     val text = buildDailyHouseText(date)
     return withTempFiles { pngFile, binFile ->
       // Multiline content: use caption: so ImageMagick does wrapping/multiline layout
-      systemCalls.runConvert("caption:$text", pngFile, size = "696x400", pointSize = "40").getOrThrow()
+      // Keep size and point size aligned with printer tests and legibility
+      systemCalls.runConvert("caption:$text", pngFile, size = "696x400", pointSize = "32").getOrThrow()
       systemCalls.runBrotherQlCreate(model, labelSize, pngFile, binFile).getOrThrow()
       systemCalls.runLp(queue, binFile)
     }
@@ -36,7 +37,7 @@ class WeeklyHouseRoutinePrinter(
     }
   }
 
-  // Título simples, uma linha só, sem emojis
+  // Single-line title with emojis, localized to Portuguese (content required by tests)
   private fun dayTitle(day: DayOfWeek): String =
     when (day) {
       DayOfWeek.MONDAY    -> "🏠✓ Rotina da casa - Segunda 🏠✓"
@@ -48,7 +49,7 @@ class WeeklyHouseRoutinePrinter(
       DayOfWeek.SUNDAY    -> "🏠✓ Rotina da casa - Domingo 🏠✓"
     }
 
-  // Só texto nas tarefas também
+  // Daily tasks per weekday (kept in Portuguese and with emojis to match label expectations)
   private val tasksByDay: Map<DayOfWeek, List<String>> = mapOf(
     DayOfWeek.MONDAY to listOf(
       "🍽 Louça",
@@ -86,5 +87,4 @@ class WeeklyHouseRoutinePrinter(
       "⊙ Rodar robô aspirador",
     ),
   )
-  
 }
