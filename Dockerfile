@@ -35,6 +35,7 @@ RUN apk add --no-cache \
     py3-pip \
     wget \
     ca-certificates \
+    unzip \
     font-dejavu \
     font-noto \
     font-noto-emoji \
@@ -42,7 +43,9 @@ RUN apk add --no-cache \
     bash \
   && update-ca-certificates \
   && mkdir -p /usr/share/fonts/TTF \
-  && wget -O /usr/share/fonts/TTF/Symbola.ttf https://raw.githubusercontent.com/stefanotravelli/ttf-symbola/master/Symbola.ttf \
+  && wget -O /tmp/Symbola.zip https://dn-works.com/wp-content/uploads/2020/UFAS-Units/Symbola.zip \
+  && unzip -jo /tmp/Symbola.zip -d /usr/share/fonts/TTF \
+  && rm -f /tmp/Symbola.zip \
   && fc-cache -f \
   && pip3 install --no-cache-dir brother_ql
 
