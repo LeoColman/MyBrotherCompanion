@@ -3,8 +3,44 @@ MyBrotherCompanion
 
 Small Ktor service that exposes simple endpoints to print labels on a Brother QL series printer. A multi‑stage Dockerfile is provided to build and run the app without requiring Java/Gradle on the host.
 
-Quick start (build and run)
----------------------------
+Docker Compose quick start
+-------------------------
+
+The easiest way to run this project is via Docker Compose. It will build the image and start the service. With recent Docker Compose (v2.22+), source changes can automatically trigger a rebuild and restart.
+
+Steps:
+
+1) Clone the repository
+
+- git clone https://github.com/YOUR_USER/BrotherQL700Companion.git
+- cd BrotherQL700Companion
+
+2) Start the service
+
+- docker compose up --build
+
+This builds the image using the Dockerfile and runs the container exposing port 8088.
+
+3) Verify it’s running
+
+- curl http://localhost:8088/health
+
+Auto rebuild on code changes (Compose develop/watch):
+
+- The provided docker-compose.yml includes a develop.watch section. With Docker Compose v2.22+ (Docker Desktop 4.25+ or an up‑to‑date Docker CLI), edits to source or Gradle files will trigger an automatic image rebuild and container restart while compose is running.
+- Keep docker compose up running and just edit files; Compose will rebuild and restart the service.
+
+Connecting to your CUPS with Compose:
+
+- Linux host: prefer host networking so the container can reach the host’s cupsd at 127.0.0.1:631.
+  - Edit docker-compose.yml to uncomment network_mode: host and remove the ports mapping.
+- Docker Desktop (macOS/Windows): use CUPS_SERVER=host.docker.internal so lp inside the container can reach the host’s cupsd.
+  - docker compose up -d (then set the env in docker-compose.yml or pass with -e when using docker run)
+
+If your CUPS is elsewhere, set CUPS_SERVER to that host/IP and ensure remote printing is allowed.
+
+Quick start (build and run with Docker directly)
+-----------------------------------------------
 
 Prerequisites:
 
