@@ -66,13 +66,13 @@ RUN set -eux; \
     fi; \
   done; \
   if [ -z "$found_url" ]; then \
-    echo >&2 "ERROR: Could not download Symbola font from any known mirror. Pass --build-arg SYMBOLA_URL=<url> to provide a source."; \
-    exit 1; \
-  fi; \
-  if unzip -t /tmp/symbola/payload >/dev/null 2>&1; then \
-    unzip -jo /tmp/symbola/payload -d /usr/share/fonts/TTF; \
+    echo >&2 "WARNING: Could not download Symbola font from any known mirror. Proceeding without Symbola. You can pass --build-arg SYMBOLA_URL=<url> to provide a source."; \
   else \
-    mv /tmp/symbola/payload /usr/share/fonts/TTF/Symbola.ttf; \
+    if unzip -t /tmp/symbola/payload >/dev/null 2>&1; then \
+      unzip -jo /tmp/symbola/payload -d /usr/share/fonts/TTF; \
+    else \
+      mv /tmp/symbola/payload /usr/share/fonts/TTF/Symbola.ttf; \
+    fi; \
   fi; \
   rm -rf /tmp/symbola; \
   fc-cache -f; \
