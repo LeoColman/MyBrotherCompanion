@@ -4,6 +4,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      # Optional: if your environment blocks the default Symbola mirrors,
+      # you can override the download URL at build time. Provide a direct
+      # link to a Symbola .ttf or .zip file.
+      # args:
+      #   SYMBOLA_URL: "https://example.com/path/to/Symbola.ttf"
     # Default: publish HTTP port
     ports:
       - "8088:8088"

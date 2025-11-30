@@ -30,6 +30,26 @@ Auto rebuild on code changes (Compose develop/watch):
 - The provided docker-compose.yml includes a develop.watch section. With Docker Compose v2.22+ (Docker Desktop 4.25+ or an up‑to‑date Docker CLI), edits to source or Gradle files will trigger an automatic image rebuild and container restart while compose is running.
 - Keep docker compose up running and just edit files; Compose will rebuild and restart the service.
 
+Troubleshooting: Symbola font download during image build
+--------------------------------------------------------
+
+The runtime image downloads the Symbola font at build time and already tries several mirrors automatically. If your environment blocks those mirrors or they are temporarily unavailable, you can provide your own URL via a build argument.
+
+- With Docker build:
+  - docker build --build-arg SYMBOLA_URL=https://example.com/path/to/Symbola.ttf -t brotherql700-companion:latest .
+
+- With Docker Compose (add under services.app.build in docker-compose.yml):
+
+  build:
+    context: .
+    dockerfile: Dockerfile
+    args:
+      SYMBOLA_URL: "https://example.com/path/to/Symbola.ttf"
+
+Notes:
+- The URL can point to either a .ttf file or a .zip containing Symbola.ttf; the Dockerfile handles both.
+- If you don’t set SYMBOLA_URL, the build will attempt multiple known mirrors automatically.
+
 Connecting to your CUPS with Compose:
 
 - Linux host: prefer host networking so the container can reach the host’s cupsd at 127.0.0.1:631.
