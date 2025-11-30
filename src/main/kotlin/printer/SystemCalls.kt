@@ -46,9 +46,8 @@ class SystemCalls(
       "-pointsize", pointSize,
       "-background", "white",
       "-fill", "black",
-      // Use a font that includes checkbox glyphs (U+2610/U+2611) and allow fontconfig fallback
-      // to Noto Sans (letters) and Noto Color Emoji (emojis). Noto Sans Symbols 2 has the
-      // ballot box characters which ensures the "☐" renders correctly.
+      // Use Symbola as requested to render miscellaneous symbols (checkboxes, etc.).
+      // Ensure the runtime image provides Symbola.ttf and that fontconfig cache is refreshed.
       "-font", "Symbola",
       // Ensure consistent non-alpha, truecolor output compatible with downstream tools
       "-alpha", "off",

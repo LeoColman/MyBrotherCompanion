@@ -33,12 +33,16 @@ RUN apk add --no-cache \
     imagemagick \
     cups-client \
     py3-pip \
-    ttf-dejavu \
-    ttf-symbola \
-    noto-fonts-extra \
-    noto-fonts \
+    wget \
+    ca-certificates \
+    font-dejavu \
+    font-noto \
+    font-noto-emoji \
     fontconfig \
     bash \
+  && update-ca-certificates \
+  && mkdir -p /usr/share/fonts/TTF \
+  && wget -O /usr/share/fonts/TTF/Symbola.ttf https://raw.githubusercontent.com/stefanotravelli/ttf-symbola/master/Symbola.ttf \
   && fc-cache -f \
   && pip3 install --no-cache-dir brother_ql
 
