@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  app:
+    container_name: brotherql700-companion
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Default: publish HTTP port
+    ports:
+      - "8088:8088"
+    environment:
+      # If your CUPS server is not inside the container network namespace,
+      # set this to the reachable hostname/IP. On Docker Desktop, use
+      # host.docker.internal so `lp` can reach the host's cupsd.
+      # Example (uncomment to use):
+      # - CUPS_SERVER=host.docker.internal
+      - JAVA_TOOL_OPTIONS=-XX:MaxRAMPercentage=75.0
+    # On Linux you may prefer host networking so the container can reach
+    # your local cupsd on 127.0.0.1:631 without additional setup. If so,
+    # comment out the ports mapping above and uncomment the line below.
+    # network_mode: host
+
+    # Compose "develop" section enables file watching and automatic rebuilds
+    # with Docker Compose v2.22+ (Docker Desktop 4.25+ or recent Docker CLI).
+    # On changes to source or build files, the image is rebuilt and the
+    # container restarted, keeping the service up-to-date.
+    develop:
+      watch:
+        # Kotlin/Gradle sources
+        - path: ./src
+          action: rebuild
+        - path: ./build.gradle.kts
+          action: rebuild
+        - path: ./settings.gradle.kts
+          action: rebuild
+        - path: ./gradle.properties
+          action: rebuild
+        - path: ./gradle
+          action: rebuild
+        - path: ./Dockerfile
+          action: rebuild
+        - path: ./README.md
+          action: rebuild
+      # Optional: ignore common noise
+      # ignore:
+      #   - path: ./.git
+      #   - path: ./build
+      #   - path: ./.gradle
