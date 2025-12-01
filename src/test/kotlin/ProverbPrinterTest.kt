@@ -19,7 +19,7 @@ import kotlin.random.Random
 
 class ProverbPrinterTest : FunSpec({
 
-  test("convert uses default convert with size 696x400 and label: for proverb text") {
+  test("convert uses default convert with size 696x400 and caption: for proverb text") {
     val (calls, executor) = capturingExecutor()
 
     val printer = ProverbPrinter(executor)
@@ -30,9 +30,9 @@ class ProverbPrinterTest : FunSpec({
     val convert = calls[0]
     convert.args.first() shouldBe "convert"
     convert.args.containsAll(listOf("-size", "696x400", "-gravity", "center", "-pointsize", "40")).shouldBeTrue()
-    val labelArg = convert.args.first { it.startsWith("label:") }
-    labelArg.shouldStartWith("label:")
-    labelArg.removePrefix("label:").isNotBlank().shouldBeTrue()
+    val captionArg = convert.args.first { it.startsWith("caption:") }
+    captionArg.shouldStartWith("caption:")
+    captionArg.removePrefix("caption:").isNotBlank().shouldBeTrue()
   }
 
   test("brother_ql_create uses model, size and reads PNG while writing BIN to stdoutFile") {

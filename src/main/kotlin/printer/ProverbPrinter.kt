@@ -11,8 +11,8 @@ class ProverbPrinter(
     // to avoid selecting color emoji glyphs.
     val text = enforceTextPresentation(randomProverb())
     return withTempFiles { pngFile, binFile ->
-      // Single line proverb: render with default ImageMagick convert using label:
-      systemCalls.runConvert("label:$text", pngFile, size = "696x400", pointSize = "40").getOrThrow()
+      // Use caption: so ImageMagick performs line wrapping for longer proverbs
+      systemCalls.runConvert("caption:$text", pngFile, size = "696x400", pointSize = "40").getOrThrow()
       systemCalls.runBrotherQlCreate(model, labelSize, pngFile, binFile).getOrThrow()
       systemCalls.runLp(queue, binFile)
     }
