@@ -81,9 +81,9 @@ Verify the service is up:
 Available endpoints:
 
 - GET /health → simple health check
-- GET /print-datetime-br → prints a label with the current date/time (pt-BR)
-- GET /print-proverb-pt → prints a random Portuguese proverb
-- GET /print-weekly-house-routine → prints today's or a specified day's routine (optional query param day)
+- POST /print-datetime-br → prints a label with the current date/time (pt-BR)
+- POST /print-proverb-pt → prints a random Portuguese proverb
+- POST /print-weekly-house-routine → prints today's or a specified day's routine (optional query param day)
 
 Swagger / OpenAPI UI
 --------------------

@@ -42,8 +42,8 @@ fun main() {
         call.respondText("OK\n", ContentType.Text.Plain.withCharset(StandardCharsets.UTF_8))
       }
 
-      // GET /print-datetime-br -> print datetime using native pipeline
-      get("/print-datetime-br") {
+      // POST /print-datetime-br -> print datetime using native pipeline
+      post("/print-datetime-br") {
         log.info("Received /print-datetime-br request")
         val result = DatetimePrinter().print()
         if (result.isSuccess) {
@@ -61,8 +61,8 @@ fun main() {
         }
       }
 
-      // GET /print-proverb-pt -> pick a proverb and print it using native pipeline
-      get("/print-proverb-pt") {
+      // POST /print-proverb-pt -> pick a proverb and print it using native pipeline
+      post("/print-proverb-pt") {
         log.info("Received /print-proverb-pt request")
         val result = ProverbPrinter().print()
         if (result.isSuccess) {
@@ -81,8 +81,8 @@ fun main() {
         }
       }
 
-      // GET /print-weekly-house-routine -> print today's weekly house routine checklist
-      get("/print-weekly-house-routine") {
+      // POST /print-weekly-house-routine -> print today's weekly house routine checklist
+      post("/print-weekly-house-routine") {
         log.info("Received /print-weekly-house-routine request")
         val dayParam = call.request.queryParameters["day"]
         val printer = WeeklyHouseRoutinePrinter()
@@ -96,7 +96,7 @@ fun main() {
               ContentType.Text.Plain.withCharset(StandardCharsets.UTF_8),
               HttpStatusCode.BadRequest
             )
-            return@get
+            return@post
           }
           val date = LocalDate.now().with(TemporalAdjusters.nextOrSame(targetDay))
           printer.printForDate(date)

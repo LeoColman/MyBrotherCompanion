@@ -21,7 +21,7 @@ paths:
                 type: string
                 example: OK\n
   /print-datetime-br:
-    get:
+    post:
       summary: Print current date/time (pt-BR)
       responses:
         '200':
@@ -40,7 +40,7 @@ paths:
                 example: "Print failed: <reason>\n"
 
   /print-proverb-pt:
-    get:
+    post:
       summary: Print a random Portuguese proverb
       responses:
         '200':
@@ -59,7 +59,7 @@ paths:
                 example: "Print proverb failed: <reason>\n"
 
   /print-weekly-house-routine:
-    get:
+    post:
       summary: Print today's weekly house routine checklist
       parameters:
         - name: day
