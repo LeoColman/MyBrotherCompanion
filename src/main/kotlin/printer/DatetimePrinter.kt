@@ -1,6 +1,6 @@
 package printer
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter.ofPattern
+import java.time.format.DateTimeFormatter.ofPattern as dateTimeFormatter
 import java.util.Locale
 
 class DatetimePrinter(
@@ -27,8 +27,8 @@ class DatetimePrinter(
   private fun formattedDateTime(date: ZonedDateTime) = date.format(dateTimeFormatter)
 
   companion object {
-    private val dayOfWeekFormatter = ofPattern("E", Locale.of("pt", "BR"))
-    private val dateTimeFormatter = ofPattern("dd/MM HH:mm")
+    private val dayOfWeekFormatter = dateTimeFormatter("E", Locale.of("pt", "BR"))
+    private val dateTimeFormatter = dateTimeFormatter("dd/MM HH:mm")
 
   }
 }
