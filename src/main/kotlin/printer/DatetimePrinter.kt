@@ -18,8 +18,17 @@ class DatetimePrinter(
 
   private fun buildDatetimeText(): String {
     val now = ZonedDateTime.now()
-    val dayOfWeek = now.format(ofPattern("E", Locale.of("pt", "BR"))).substring(0, 3).lowercase()
-    val dateTime = now.format(ofPattern("dd/MM HH:mm"))
+    val dayOfWeek = formattedDayOfWeek(now)
+    val dateTime = formattedDateTime(now)
     return "$dayOfWeek $dateTime"
+  }
+
+  private fun formattedDayOfWeek(date: ZonedDateTime) = date.format(dayOfWeekFormatter).substring(0, 3).lowercase()
+  private fun formattedDateTime(date: ZonedDateTime) = date.format(dateTimeFormatter)
+
+  companion object {
+    private val dayOfWeekFormatter = ofPattern("E", Locale.of("pt", "BR"))
+    private val dateTimeFormatter = ofPattern("dd/MM HH:mm")
+
   }
 }

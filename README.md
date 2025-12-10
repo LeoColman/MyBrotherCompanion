@@ -96,6 +96,34 @@ This project exposes a Swagger UI to browse and try the API endpoints.
 
 From there you can expand endpoints and execute requests directly from the browser.
 
+Run with Docker Compose
+-----------------------
+
+This repo ships a `docker-compose.yml` to make it easy to run and rebuild.
+
+- Rebuild when starting (recommended):
+
+  - docker compose up --build
+
+- Linux host (use host network to reach local CUPS):
+
+  - docker compose --profile hostnet up --build
+
+- macOS/Windows: publish the port and optionally point to host CUPS via env:
+
+  - docker compose up --build
+  - CUPS example: `CUPS_SERVER=host.docker.internal docker compose up --build`
+
+Convenience Makefile targets
+---------------------------
+
+If you prefer short commands, use the provided Makefile which always rebuilds on up:
+
+- make up              # equivalent to: docker compose up --build
+- make up-hostnet      # Linux host network mode (rebuilds too)
+- make down            # stop and remove
+- make logs            # follow logs
+
 Printing notes (CUPS and queue)
 -------------------------------
 
